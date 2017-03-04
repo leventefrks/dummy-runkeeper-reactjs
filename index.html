@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>dummy-runkeeper-reactjs</title>
+  <!-- Script tags including React -->
+	<link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900">
+  <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css">
+	<link type="text/css" rel="stylesheet" href="css/main.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+  <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+    <script type="text/babel">
+
+     		class MainContainer extends React.Component {
+           constructor(props){
+             super(props);
+             this.state = {
+               display: true
+             };
+           }
+
+           btnStart() {
+             this.TimeContainer.startStopwatch();
+             this.setState( (prevState) => {
+                 return { display: !prevState.display }
+               });
+           }
+
+           btnStop(){
+             this.TimeContainer.stopStopwatch();
+           }
+
+           render() {
+             return (
+               <div className="MainContainer" >
+                 <NavContainer />
+                 <TimeContainer ref={e => {this.TimeContainer = e}}/>
+                 <DistanceContainer />
+                 <PaceContainer />
+                 <CtaContainer start={this.btnStart.bind(this)} isVisible={this.state.display} stop={this.btnStop.bind(this)} />
+               </div>
+     				);
+           }
+         }
+
+         class CtaContainer extends React.Component {
+           constructor(props) {
+             super(props);
+           }
+             render() {
+               return (
+                 <section className="CtaContainer">
+                   <div className="play">
+                     {
+                       this.props.isVisible
+                       ? <button type="button" onClick={this.props.start} >
+                         <i className="fa fa-lg fa-play-circle" aria-hidden="true"></i>
+                       </button>
+                       : null
+                     }
+                   </div>
+                   <div className="stop">
+                    {
+                      !this.props.isVisible
+                      ? <button type="button" onClick={this.props.stop}>
+                        <i className="fa fa-lg fa-stop-circle" aria-hidden="true"></i>
+                      </button>
+                      : null
+                    }
+                   </div>
+                 </section>
+               )
+             }
+           }
+
+   	class TimeContainer extends React.Component {
+         constructor(props){
+         super(props);
+
+           this.state = {
+             s: '0' + 0,
+             m: '0' + 0,
+             h: '0' + 0
+           };
+         }
+
+startStopwatch() {
+
+  let sec = this.state.s;
+  let min = this.state.m;
+  let hour = this.state.h;
+
+     setInterval( () => {
+       sec++;
+       sec = (sec >= 10) ? sec : '0' + sec;
+       if (sec === 60) {
+         sec = '0' + 0;
+         min++;
+         min = ( min >= 10) ? min : '0' + min;
+         if ( min === 60 ) {
+           min = '0' + 0;
+           hour++;
+           hour = ( hour >= 10) ? h : '0' + hour;
+         }
+       }
+
+        this.setState({
+          s: sec, m: min, h: hour
+        });
+
+     }, 1000);
+     this.props.style
+  }
+
+  stopStopwatch(){
+    console.log('stopStopwatch');
+    //this.setState({ s: 0, m: 0, h: 0});
+  }
+
+         render() {
+           return(
+   				  <section className="TimeContainer" ref={ e => {this.TimeContainer = e}}>
+   					  <h2>{this.state.h}:{this.state.m}:{this.state.s}</h2>
+   						<span>time</span>
+   				  </section>
+   				);
+         }
+       }
+
+
+   class PaceContainer extends React.Component {
+      constructor(props){
+      super(props);
+
+        this.state = {
+          m:  0,
+          s: "0" + 0
+        };
+    }
+
+      render() {
+        return (
+        <section className="PaceContainer">
+          <div className="currentPace">
+             <h2>{this.state.m}.{this.state.s}</h2>
+             <span>current pace</span>
+           </div>
+           <div className="avgPace">
+             <h2>{this.state.m}.{this.state.s}</h2>
+             <span>avg pace</span>
+           </div>
+        </section>
+       );
+      }
+    }
+
+    class DistanceContainer extends React.Component {
+         constructor(props){
+         super(props);
+
+           this.state = {
+             k: 0,
+             m: "0" + 0
+           };
+       }
+
+         render() {
+           return (
+           <section className="DistanceContainer">
+             <h2>{this.state.k}.{this.state.m}</h2>
+             <span>kilometers</span>
+           </section>
+          );
+         }
+       }
+
+   class NavContainer extends React.Component {
+       constructor(props){
+       super(props);
+    }
+       render(){
+         return(
+           <nav className="NavContainer">
+             <div className="Network">
+               <h6>verizon (us)</h6>
+             </div>
+             <ProgressBar/>
+           </nav>
+         );
+       }
+     }
+
+     class ProgressBar extends React.Component {
+         constructor(props){
+         super(props);
+      }
+         render(){
+           return(
+             <div className="ProgressBar">
+               <div className="alarm">
+                 <i className="fa fa-clock-o" aria-hidden="true"></i>
+               </div>
+               <div className="bell">
+                 <i className="fa fa-bell-slash" aria-hidden="true"></i>
+               </div>
+               <div className="battery">
+                 <i className="fa fa-battery-half" aria-hidden="true"></i>
+               </div>
+               <div className="bolt">
+                 <i className="fa fa-bolt" aria-hidden="true"></i>
+               </div>
+               <Clock/>
+            </div>
+           );
+         }
+       }
+
+class Clock extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {date: new Date().toLocaleTimeString()};
+  }
+
+  componentDidMount() {
+    this.timerID = setInterval( () => this.updateClock(), 1000 );
+  }
+
+  updateClock() {
+    this.setState({
+      date: new Date().toLocaleTimeString()
+    });
+  }
+
+  render() {
+    return (
+      <div className="ActualTime">
+        <span>{this.state.date}</span>
+      </div>
+    );
+  }
+}
+         ReactDOM.render(<MainContainer />, app);
+
+    </script>
+</body>
+</html>
