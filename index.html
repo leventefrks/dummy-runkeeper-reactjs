@@ -18,15 +18,20 @@
      		class MainContainer extends React.Component {
            constructor(props){
              super(props);
+
              this.state = {
-               display: true
+               display: true,
+               isStarted: false
              };
            }
 
            btnStart() {
              this.TimeContainer.startStopwatch();
              this.setState( (prevState) => {
-                 return { display: !prevState.display }
+                 return {
+                   display: !prevState.display,
+                   isStarted: true
+                  }
                });
            }
 
@@ -36,12 +41,12 @@
 
            render() {
              return (
-               <div className="MainContainer" >
+               <div>
                  <NavContainer />
                  <TimeContainer ref={e => {this.TimeContainer = e}}/>
                  <DistanceContainer />
                  <PaceContainer />
-                 <CtaContainer start={this.btnStart.bind(this)} isVisible={this.state.display} stop={this.btnStop.bind(this)} />
+                 <CtaContainer start={this.btnStart.bind(this)} isVisible={this.state.display} isStarted={this.state.isStarted} stop={this.btnStop.bind(this)} />
                </div>
      				);
            }
@@ -86,6 +91,7 @@
              m: '0' + 0,
              h: '0' + 0
            };
+
          }
 
 startStopwatch() {
@@ -94,7 +100,7 @@ startStopwatch() {
   let min = this.state.m;
   let hour = this.state.h;
 
-     setInterval( () => {
+    setInterval( () => {
        sec++;
        sec = (sec >= 10) ? sec : '0' + sec;
        if (sec === 60) {
@@ -113,12 +119,10 @@ startStopwatch() {
         });
 
      }, 1000);
-     this.props.style
   }
 
-  stopStopwatch(){
+  stopStopwatch() {
     console.log('stopStopwatch');
-    //this.setState({ s: 0, m: 0, h: 0});
   }
 
          render() {
@@ -130,7 +134,6 @@ startStopwatch() {
    				);
          }
        }
-
 
    class PaceContainer extends React.Component {
       constructor(props){
@@ -178,46 +181,31 @@ startStopwatch() {
          }
        }
 
-   class NavContainer extends React.Component {
-       constructor(props){
-       super(props);
-    }
-       render(){
-         return(
-           <nav className="NavContainer">
-             <div className="Network">
-               <h6>verizon (us)</h6>
-             </div>
-             <ProgressBar/>
-           </nav>
-         );
-       }
-     }
 
-     class ProgressBar extends React.Component {
-         constructor(props){
-         super(props);
-      }
-         render(){
-           return(
-             <div className="ProgressBar">
-               <div className="alarm">
-                 <i className="fa fa-clock-o" aria-hidden="true"></i>
-               </div>
-               <div className="bell">
-                 <i className="fa fa-bell-slash" aria-hidden="true"></i>
-               </div>
-               <div className="battery">
-                 <i className="fa fa-battery-half" aria-hidden="true"></i>
-               </div>
-               <div className="bolt">
-                 <i className="fa fa-bolt" aria-hidden="true"></i>
-               </div>
-               <Clock/>
-            </div>
-           );
-         }
-       }
+  const NavContainer = (props) =>
+        <nav className="NavContainer">
+         <div className="Network">
+           <h6>verizon (us)</h6>
+         </div>
+         <ProgressBar/>
+       </nav>
+
+   const ProgressBar = (props) =>
+   <div className="ProgressBar">
+     <div className="alarm">
+       <i className="fa fa-clock-o" aria-hidden="true"></i>
+     </div>
+     <div className="bell">
+       <i className="fa fa-bell-slash" aria-hidden="true"></i>
+     </div>
+     <div className="battery">
+       <i className="fa fa-battery-half" aria-hidden="true"></i>
+     </div>
+     <div className="bolt">
+       <i className="fa fa-bolt" aria-hidden="true"></i>
+     </div>
+     <Clock/>
+  </div>
 
 class Clock extends React.Component {
   constructor(props) {
@@ -226,7 +214,7 @@ class Clock extends React.Component {
   }
 
   componentDidMount() {
-    this.timerID = setInterval( () => this.updateClock(), 1000 );
+      this.timer =  setInterval( () => this.updateClock(), 1000 );
   }
 
   updateClock() {
@@ -234,6 +222,8 @@ class Clock extends React.Component {
       date: new Date().toLocaleTimeString()
     });
   }
+
+
 
   render() {
     return (
@@ -243,7 +233,7 @@ class Clock extends React.Component {
     );
   }
 }
-         ReactDOM.render(<MainContainer />, app);
+         ReactDOM.render(<MainContainer/>, app);
 
     </script>
 </body>
